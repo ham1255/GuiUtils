@@ -1,6 +1,7 @@
 package net.glomc.utils.gui;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -206,7 +208,8 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
-        if (event.getInventory() == inventory) {
+        System.out.println(isEqual(event.getView()));
+        if (isEqual(event.getView())) {
             event.setCancelled(true);
             onClick(event);
         }
@@ -215,7 +218,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     @EventHandler
     public void onInventoryCloseEvent(InventoryCloseEvent event) {
-        if (event.getInventory() == inventory) {
+        if (isEqual(event.getView())) {
             if (unRegisterListenerWhenClosed) {
                 System.out.println(Arrays.toString(InventoryCloseEvent.getHandlerList().getRegisteredListeners()));
                 InventoryClickEvent.getHandlerList().unregister(this);
@@ -225,6 +228,14 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         }
     }
 
+
+    private boolean isEqual(InventoryView view) {
+      if (Bukkit.getServer().getClass().getPackage().getName().contains("1_12")) {
+          return view.getTitle().equals(ChatColor.translateAlternateColorCodes('&', name));
+      }else {
+          return this.getInventory() == view.getTopInventory();
+      }
+    }
 
     public abstract void onClick(InventoryClickEvent event);
 
