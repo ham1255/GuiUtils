@@ -208,7 +208,6 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
-        System.out.println(isEqual(event.getView()));
         if (isEqual(event.getView())) {
             event.setCancelled(true);
             onClick(event);
@@ -220,7 +219,6 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
     public void onInventoryCloseEvent(InventoryCloseEvent event) {
         if (isEqual(event.getView())) {
             if (unRegisterListenerWhenClosed) {
-                System.out.println(Arrays.toString(InventoryCloseEvent.getHandlerList().getRegisteredListeners()));
                 InventoryClickEvent.getHandlerList().unregister(this);
                 InventoryCloseEvent.getHandlerList().unregister(this);
             }
