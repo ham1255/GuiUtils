@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -56,6 +57,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     }
 
+    @Deprecated
     protected void insertItem(Material material, int howMany, int slot, String name) {
         ItemStack item = new ItemStack(material, 1);
         ItemMeta item_meta = item.getItemMeta();
@@ -66,7 +68,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         this.inventory.setItem(slot, item);
     }
 
-    //might cause server crash if mojang api is down i think
+    @Deprecated
     protected void insertSkullItem(String skullOwner, int howMany, int slot, String... Lore) {
         ItemStack i2 = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta itemMeta2 = i2.getItemMeta();
@@ -99,7 +101,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         });
     }
 
-    //might cause server crash if mojang api is down i think
+    @Deprecated
     protected void insertSkullItem(UUID skullOwner, int howMany, int slot, String... Lore) {
         ItemStack i2 = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta itemMeta2 = i2.getItemMeta();
@@ -132,6 +134,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         });
     }
 
+    @Deprecated
     protected void insertSkullItem(OfflinePlayer skullOwner, int howMany, int slot, String... Lore) {
         ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
@@ -148,6 +151,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
     }
 
 
+    @Deprecated
     protected void insertItem(Material material, int howMany, int slot, String name, String... Lore) {
         ItemStack item = new ItemStack(material, 1);
         ItemMeta item_meta = item.getItemMeta();
@@ -162,7 +166,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         item.setAmount(howMany);
         this.inventory.setItem(slot, item);
     }
-
+    
     protected void fillGUI(Material material) {
         int slot = -1;
         try {
@@ -177,6 +181,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     }
 
+    @Deprecated
     protected void enchantItem(int slot) {
         ItemStack itemStack = inventory.getItem(slot);
         if (itemStack == null) {
@@ -192,6 +197,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         inventory.setItem(slot, itemStack);
     }
 
+    @Deprecated
     protected void removeEnchantFromItem(int slot) {
         ItemStack itemStack = inventory.getItem(slot);
         if (itemStack == null) {
@@ -244,6 +250,12 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public void openGui(Player player, AbstractGui gui, Plugin plugin) {
+        plugin.getServer().getPluginManager().registerEvents(gui, plugin);
+        gui.setup();
+        player.openInventory(gui.getInventory());
     }
 
 }
