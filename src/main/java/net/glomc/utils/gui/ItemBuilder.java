@@ -46,6 +46,12 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setLore(ArrayList<String> lore) {
+        this.lore.clear();
+        lore.forEach((line) -> this.lore.add(ChatColor.translateAlternateColorCodes('&', line)));
+        return this;
+    }
+
     public ItemBuilder setEnchanted(boolean enchanted) {
         this.enchanted = enchanted;
         return this;

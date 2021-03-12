@@ -3,7 +3,6 @@ package net.glomc.utils.gui;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -16,10 +15,9 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
@@ -31,15 +29,12 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
     protected boolean unRegisterListenerWhenClosed;
     private final Plugin plugin;
 
-
     public enum Rows {
         ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5), SIX(6);
         int rows;
-
         Rows(int rows) {
             this.rows = rows * 9;
         }
-
         public int getRows() {
             return rows;
         }
@@ -57,122 +52,20 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     }
 
-    @Deprecated
-    protected void insertItem(Material material, int howMany, int slot, String name) {
-        ItemStack item = new ItemStack(material, 1);
-        ItemMeta item_meta = item.getItemMeta();
-        assert item_meta != null;
-        item_meta.setDisplayName(translateAlternateColorCodes('&', name));
-        item.setItemMeta(item_meta);
-        item.setAmount(howMany);
-        this.inventory.setItem(slot, item);
-    }
 
-    @Deprecated
-    protected void insertSkullItem(String skullOwner, int howMany, int slot, String... Lore) {
-        ItemStack i2 = new ItemStack(Material.PLAYER_HEAD);
-        ItemMeta itemMeta2 = i2.getItemMeta();
-
-        List<String> lore2 = new ArrayList<>();
-        for (String s : Lore) {
-            lore2.add(translateAlternateColorCodes('&', s));
-        }
-        itemMeta2.setLore(lore2);
-
-        itemMeta2.setDisplayName(translateAlternateColorCodes('&', "&e" + name));
-
-        i2.setItemMeta(itemMeta2);
-        this.inventory.setItem(slot, i2);
-        //async code
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-            OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(skullOwner);
-            meta.setOwningPlayer(player);
-            meta.setDisplayName(translateAlternateColorCodes('&', "&e" + name));
-
-            List<String> lore = new ArrayList<>();
-            for (String s : Lore) {
-                lore.add(translateAlternateColorCodes('&', s));
-            }
-            meta.setLore(lore);
-            itemStack.setItemMeta(meta);
-            this.inventory.setItem(slot, itemStack);
-        });
-    }
-
-    @Deprecated
-    protected void insertSkullItem(UUID skullOwner, int howMany, int slot, String... Lore) {
-        ItemStack i2 = new ItemStack(Material.PLAYER_HEAD);
-        ItemMeta itemMeta2 = i2.getItemMeta();
-
-        List<String> lore2 = new ArrayList<>();
-        for (String s : Lore) {
-            lore2.add(translateAlternateColorCodes('&', s));
-        }
-        itemMeta2.setLore(lore2);
-
-        itemMeta2.setDisplayName(translateAlternateColorCodes('&', "&e" + name));
-
-        i2.setItemMeta(itemMeta2);
-        this.inventory.setItem(slot, i2);
-        //async code
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-            OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(skullOwner);
-            meta.setOwningPlayer(player);
-            meta.setDisplayName(translateAlternateColorCodes('&', "&e" + name));
-
-            List<String> lore = new ArrayList<>();
-            for (String s : Lore) {
-                lore.add(translateAlternateColorCodes('&', s));
-            }
-            meta.setLore(lore);
-            itemStack.setItemMeta(meta);
-            this.inventory.setItem(slot, itemStack);
-        });
-    }
-
-    @Deprecated
-    protected void insertSkullItem(OfflinePlayer skullOwner, int howMany, int slot, String... Lore) {
-        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-        meta.setOwningPlayer(skullOwner);
-        meta.setDisplayName(translateAlternateColorCodes('&', "&e" + name));
-
-        List<String> lore = new ArrayList<>();
-        for (String s : Lore) {
-            lore.add(translateAlternateColorCodes('&', s));
-        }
-        meta.setLore(lore);
-        itemStack.setItemMeta(meta);
-        this.inventory.setItem(slot, itemStack);
-    }
-
-
-    @Deprecated
-    protected void insertItem(Material material, int howMany, int slot, String name, String... Lore) {
-        ItemStack item = new ItemStack(material, 1);
-        ItemMeta item_meta = item.getItemMeta();
-        assert item_meta != null;
-        item_meta.setDisplayName(translateAlternateColorCodes('&', name));
-        List<String> lore = new ArrayList<>();
-        for (String s : Lore) {
-            lore.add(translateAlternateColorCodes('&', s));
-        }
-        item_meta.setLore(lore);
-        item.setItemMeta(item_meta);
-        item.setAmount(howMany);
-        this.inventory.setItem(slot, item);
-    }
-    
     protected void fillGUI(Material material) {
         int slot = -1;
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta item_meta = item.getItemMeta();
+        assert item_meta != null;
+        item_meta.setDisplayName(translateAlternateColorCodes('&', "&1."));
+        item.setItemMeta(item_meta);
+        item.setAmount(1);
         try {
+
             while (slot <= (this.rows - 2)) {
                 slot++;
-                insertItem(material, 1, slot, "&1.", "");
+                this.inventory.setItem(slot, item);
             }
         } catch (Exception ignored) {
 
@@ -181,7 +74,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
     }
 
-    @Deprecated
+
     protected void enchantItem(int slot) {
         ItemStack itemStack = inventory.getItem(slot);
         if (itemStack == null) {
@@ -197,7 +90,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         inventory.setItem(slot, itemStack);
     }
 
-    @Deprecated
+
     protected void removeEnchantFromItem(int slot) {
         ItemStack itemStack = inventory.getItem(slot);
         if (itemStack == null) {
@@ -252,10 +145,9 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         return inventory;
     }
 
-    public void openGui(Player player, AbstractGui gui, Plugin plugin) {
-        plugin.getServer().getPluginManager().registerEvents(gui, plugin);
-        gui.setup();
-        player.openInventory(gui.getInventory());
+
+    public void openGui(Player player) {
+        player.openInventory(this.inventory);
     }
 
 }
