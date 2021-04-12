@@ -18,23 +18,22 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 
-
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
-@SuppressWarnings("unused")
 public abstract class AbstractGui implements CommandExecutor, Listener {
     protected Inventory inventory;
     private final int rows;
     protected String name;
     protected boolean unRegisterListenerWhenClosed;
-    private final Plugin plugin;
 
     public enum Rows {
         ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5), SIX(6);
         int rows;
+
         Rows(int rows) {
             this.rows = rows * 9;
         }
+
         public int getRows() {
             return rows;
         }
@@ -48,7 +47,6 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         this.name = translateAlternateColorCodes('&', name);
         inventory = Bukkit.createInventory(null, this.rows, this.name);
         this.unRegisterListenerWhenClosed = unRegisterListenerWhenClosed;
-        this.plugin = plugin;
 
     }
 
@@ -75,6 +73,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
     }
 
 
+    @Deprecated
     protected void enchantItem(int slot) {
         ItemStack itemStack = inventory.getItem(slot);
         if (itemStack == null) {
@@ -90,7 +89,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         inventory.setItem(slot, itemStack);
     }
 
-
+    @Deprecated
     protected void removeEnchantFromItem(int slot) {
         ItemStack itemStack = inventory.getItem(slot);
         if (itemStack == null) {
@@ -127,11 +126,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
 
     private boolean isEqual(InventoryView view) {
-      if (Bukkit.getServer().getClass().getPackage().getName().contains("1_12")) {
-          return view.getTitle().equals(ChatColor.translateAlternateColorCodes('&', name));
-      }else {
-          return this.getInventory() == view.getTopInventory();
-      }
+        return view.getTitle().equals(ChatColor.translateAlternateColorCodes('&', name));
     }
 
     public abstract void onClick(InventoryClickEvent event);
