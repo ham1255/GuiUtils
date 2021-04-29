@@ -24,6 +24,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
     protected Inventory inventory;
     private final int rows;
     protected String name;
+    protected final Plugin plugin;
     protected boolean unRegisterListenerWhenClosed;
 
     public enum Rows {
@@ -47,6 +48,7 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         this.name = translateAlternateColorCodes('&', name);
         inventory = Bukkit.createInventory(null, this.rows, this.name);
         this.unRegisterListenerWhenClosed = unRegisterListenerWhenClosed;
+        this.plugin = plugin;
 
     }
 
