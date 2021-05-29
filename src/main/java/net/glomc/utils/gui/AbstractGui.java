@@ -4,19 +4,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryDoubleChest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
+
+import java.util.Arrays;
 
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
@@ -49,11 +54,15 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         inventory = Bukkit.createInventory(null, this.rows, this.name);
         this.unRegisterListenerWhenClosed = unRegisterListenerWhenClosed;
         this.plugin = plugin;
-
     }
 
 
-    protected void fillGUI(Material material) {
+    private void fillGUI(Material material) {
+        fillGUI(material, null);
+    }
+
+
+    protected void fillGUI(Material material, Integer... excluded) {
         int slot = -1;
         ItemStack item = new ItemStack(material, 1);
         ItemMeta item_meta = item.getItemMeta();
@@ -62,10 +71,12 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         item.setItemMeta(item_meta);
         item.setAmount(1);
         try {
-
             while (slot <= (this.rows - 2)) {
                 slot++;
-                this.inventory.setItem(slot, item);
+                int finalSlot = slot;
+                if (excluded != null && Arrays.stream(excluded).noneMatch(i -> i == finalSlot)) {
+                    this.inventory.setItem(slot, item);
+                }
             }
         } catch (Exception ignored) {
 
@@ -128,10 +139,15 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
 
 
     private boolean isEqual(InventoryView view) {
-        return view.getTitle().equals(ChatColor.translateAlternateColorCodes('&', name));
+        return view.getTopInventory().equals(this.inventory) || view.getTitle().equals(ChatColor.translateAlternateColorCodes('&', name));
     }
 
     public abstract void onClick(InventoryClickEvent event);
+
+
+    public void insertItem(int slot, ItemStack itemStack) {
+        this.inventory.setItem(slot, itemStack);
+    }
 
 
     public void removeItem(int slot) {
@@ -142,6 +158,9 @@ public abstract class AbstractGui implements CommandExecutor, Listener {
         return inventory;
     }
 
+    public InventoryType getType() {
+        return this.inventory.getType();
+    }
 
     public void openGui(Player player) {
         player.openInventory(this.inventory);
