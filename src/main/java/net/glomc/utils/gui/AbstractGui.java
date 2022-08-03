@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -25,13 +26,12 @@ public abstract class AbstractGui implements Listener {
     private static final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
     protected Inventory inventory;
     protected final Plugin plugin;
-    protected boolean unRegisterListenerWhenClosed;
+    private boolean unregisterListenerOnClose = false;
 
     private boolean enableDragging = false;
 
-    protected AbstractGui(Component name, int rows, Boolean unRegisterListenerWhenClosed, Plugin plugin) {
+    protected AbstractGui(Component name, int rows, Plugin plugin) {
         this.inventory = Bukkit.createInventory(null, Ints.constrainToRange(rows, 1, 6) * 9, name);
-        this.unRegisterListenerWhenClosed = unRegisterListenerWhenClosed;
         this.plugin = plugin;
     }
 
@@ -82,13 +82,23 @@ public abstract class AbstractGui implements Listener {
     @EventHandler
     public void onInventoryCloseEvent(InventoryCloseEvent event) {
         if (event.getInventory() == this.inventory) {
-            if (unRegisterListenerWhenClosed) {
-                InventoryClickEvent.getHandlerList().unregister(this);
-                InventoryCloseEvent.getHandlerList().unregister(this);
-                InventoryDragEvent.getHandlerList().unregister(this);
+            if (unregisterListenerOnClose) {
+                unregisterListener();
             }
 
         }
+    }
+
+    public void unregisterListenerOnClose(boolean unregisterListenerOnClose) {
+        this.unregisterListenerOnClose = unregisterListenerOnClose;
+    }
+
+    public void registerListener() {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
+    public void unregisterListener() {
+        HandlerList.unregisterAll(this);
     }
 
     public abstract void onClick(InventoryClickEvent event);
