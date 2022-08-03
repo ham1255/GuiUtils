@@ -1,2 +1,5 @@
 # GuiUtils
-Made by Ham1255 (GloMC network) this used to make making guis abit easy with auto supporting command interface and listener!
+
+Made by ham1255, ONLY USED IN PAPER PLATFORM `does not work on spigot`
+
+Under MIT license

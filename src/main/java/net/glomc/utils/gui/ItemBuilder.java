@@ -1,6 +1,6 @@
 package net.glomc.utils.gui;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -10,20 +10,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
-
 public class ItemBuilder {
 
     private Material material;
-    private String name;
-    private final List<String> lore;
+    private Component displayName;
+    private List<Component> lore;
     private int amount;
     private boolean enchanted;
 
 
     public ItemBuilder() {
         material = Material.STONE;
-        name = "STONE";
+        displayName = Component.text("STONE");
         lore = new ArrayList<>();
         amount = 1;
     }
@@ -33,22 +31,13 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setName(String name) {
-        this.name = ChatColor.translateAlternateColorCodes('&', name);
+    public ItemBuilder setName(Component displayName) {
+        this.displayName = displayName;
         return this;
     }
 
-    public ItemBuilder setLore(String... lore) {
-        this.lore.clear();
-        for (String s : lore) {
-            this.lore.add(translateAlternateColorCodes('&', s));
-        }
-        return this;
-    }
-
-    public ItemBuilder setLore(ArrayList<String> lore) {
-        this.lore.clear();
-        lore.forEach((line) -> this.lore.add(ChatColor.translateAlternateColorCodes('&', line)));
+    public ItemBuilder setLore(Component... lore) {
+        this.lore = List.of(lore);
         return this;
     }
 
@@ -66,8 +55,8 @@ public class ItemBuilder {
         ItemStack itemStack = new ItemStack(this.material);
         itemStack.setAmount(this.amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setLore(this.lore);
-        itemMeta.setDisplayName(name);
+        itemMeta.lore(this.lore);
+        itemMeta.displayName(this.displayName);
         if (enchanted) {
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             itemMeta.addEnchant(Enchantment.FIRE_ASPECT, 1, false);

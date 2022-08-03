@@ -6,7 +6,7 @@
 
     <groupId>net.glomc.utils</groupId>
     <artifactId>GuiUtils</artifactId>
-    <version>1.4.0-Snapshot</version>
+    <version>1.5.0-Snapshot</version>
     <packaging>jar</packaging>
 
     <build>
@@ -41,11 +41,12 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
+            <version>1.19.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
