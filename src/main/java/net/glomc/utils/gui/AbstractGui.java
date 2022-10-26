@@ -35,6 +35,7 @@ public abstract class AbstractGui implements Listener {
         this.plugin = plugin;
     }
 
+    protected abstract void render();
 
     @Deprecated
     protected void fillGUI(Material material) {
