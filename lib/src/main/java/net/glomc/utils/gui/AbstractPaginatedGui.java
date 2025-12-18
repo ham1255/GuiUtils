@@ -46,7 +46,7 @@ public abstract class AbstractPaginatedGui<T> extends AbstractGui {
     }
 
     private boolean canNextPage() {
-        return getPageContent(page.get()).size() == 45 && getPageContent(page.get() + 1).size() > 0;
+        return getPageContent(page.get()).size() == 45 && !getPageContent(page.get() + 1).isEmpty();
     }
 
 

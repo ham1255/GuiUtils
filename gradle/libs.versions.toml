@@ -1,0 +1,11 @@
+[versions]
+paper-userdev = "2.0.0-beta.19"
+paper-dev-bundle = "1.21.11-R0.1-SNAPSHOT"
+
+[libraries]
+# example = { group = "example", name = "example-java", version.ref = "example" }
+
+
+[plugins]
+paper-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "paper-userdev" }
+
