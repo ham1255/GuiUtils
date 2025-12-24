@@ -1,7 +1,9 @@
 package net.glomc.utils.gui;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.glomc.utils.gui.builders.ItemBuilder;
 import net.glomc.utils.gui.components.GuiItem;
 import net.glomc.utils.gui.components.GuiListener;
@@ -33,14 +35,24 @@ public class TestPlugin extends JavaPlugin {
   public static class TestPageGui extends PaginatedChestGui {
 
     protected TestPageGui(Plugin plugin) {
+      super(Component.text("page gui test"), 6, 6, plugin, getTestItemsBIG());
+      cancelRefreshOnClose(true);
+      refreshGuiEvery(5);
+
+    }
 
 
-      super(Component.text("page gui test"), 6, 6, plugin, getTestItems());
+    private static List<GuiItem> getTestItemsBIG() {
+      List<GuiItem> content = new ArrayList<>();
+      for (Material value : Material.values()) {
+        if (value.isItem()) content.add(new GuiItem(ItemStack.of(value)));
+      }
+      return content;
     }
 
     private static List<GuiItem> getTestItems() {
       List<GuiItem> content = new ArrayList<>();
-      for (int i = 1; i <= 360*360; i++) {
+      for (int i = 1; i <= 360 * 360; i++) {
         GuiItem item1 = new GuiItem(new ItemBuilder().setName(Component.text(i)).build());
         content.add(item1);
       }
@@ -50,16 +62,31 @@ public class TestPlugin extends JavaPlugin {
     @Override
     protected void renderToolBox() {
       super.renderToolBox();
-      insertToolBoxItem(7, new GuiItem(ItemStack.of(Material.BARRIER), (item, event) -> close((Player) event.getWhoClicked())));
+      insertToolBoxItem(7, new GuiItem(ItemBuilder.newItem().setName(Component.text("close menu")).setMaterial(Material.BARRIER).build(), (item, event) -> close((Player) event.getWhoClicked())));
+      int pageLast = getLastPage();
+      final GuiItem PAGE_MAX_ITEM = new GuiItem(new ItemBuilder().setAmount(pageLast > 64 ? 1 : pageLast).setName(Component.text(pageLast)).setMaterial(Material.BOOK).build());
+      insertToolBoxItem(8, PAGE_MAX_ITEM);
+    }
+
+    boolean isReverse = false;
+    @Override
+    protected void onRefresh() {
+      if (isReverse) {
+        backPage();
+        if (!canBackPage()) isReverse = false;
+      } else {
+        nextPage();
+        if (!canNextPage()) isReverse = true;
+      }
     }
   }
 
 
-  public static class TestChestGui extends AbstractChestGui {
+  public static class TestChestAuto extends AbstractChestGui {
 
     private int x = 0;
 
-    public TestChestGui(Plugin plugin) {
+    public TestChestAuto(Plugin plugin) {
       super(Component.text("gui test"), 3, plugin);
 
     }
@@ -95,6 +122,7 @@ public class TestPlugin extends JavaPlugin {
     protected void prepareRender() {
       renderOptions();
     }
+
 
   }
 

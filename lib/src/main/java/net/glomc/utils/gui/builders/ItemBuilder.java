@@ -64,4 +64,10 @@ public class ItemBuilder {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
+
+    public static ItemBuilder newItem() {
+      return new ItemBuilder();
+    }
+
+
 }

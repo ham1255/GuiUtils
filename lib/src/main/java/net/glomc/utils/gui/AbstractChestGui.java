@@ -2,6 +2,7 @@ package net.glomc.utils.gui;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.glomc.utils.gui.components.GuiItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -96,13 +97,15 @@ public abstract class AbstractChestGui implements InventoryHolder {
   }
 
   public void open(Player player) {
-    updateGui();
+    // check if gui is auto updating/refreshiNG
+    if (refreshTask == null || refreshTask.isCancelled()) updateGui();
     player.openInventory(this.inventory);
   }
 
   public void close(Player player) {
     player.getScheduler().runDelayed(plugin, task -> player.closeInventory(), null, 2);
   }
+
   public void close() {
     plugin.getServer().getGlobalRegionScheduler().execute(plugin, this.inventory::close);
   }
@@ -119,11 +122,36 @@ public abstract class AbstractChestGui implements InventoryHolder {
   }
 
   public void onClose(InventoryCloseEvent event) {
-
+    if (cancelRefreshOnClose) {
+      cancelRefresh();
+    }
   }
 
   public void onDrag(InventoryDragEvent event) {
     event.setCancelled(true);
   }
 
+  // refreshable gui
+  private ScheduledTask refreshTask;
+  private boolean cancelRefreshOnClose = false;
+
+  public void refreshGuiEvery(int ticks) {
+    Preconditions.checkArgument(refreshTask == null, "refresh task already exists, CANCEL first");
+    refreshTask = plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(plugin, scheduledTask -> {
+      onRefresh();
+      updateGui();
+    }, 1, ticks);
+  }
+
+  public void cancelRefresh() {
+    if (refreshTask != null) refreshTask.cancel();
+  }
+
+  protected void cancelRefreshOnClose(boolean cancel) {
+    this.cancelRefreshOnClose = cancel;
+  }
+
+  protected void onRefresh() {
+
+  }
 }

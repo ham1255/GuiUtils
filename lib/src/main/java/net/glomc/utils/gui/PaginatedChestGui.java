@@ -90,8 +90,6 @@ public abstract class PaginatedChestGui extends AbstractChestGui {
     final GuiItem BACK_PAGE_ITEM = new GuiItem(new ItemBuilder().setName(Component.text("<<<<< Previous page").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)).setMaterial(Material.PAPER).build(), (item, event) -> backPage());
     final GuiItem NEXT_PAGE_ITEM = new GuiItem(new ItemBuilder().setName(Component.text("Next page >>>>>").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)).setMaterial(Material.PAPER).build(), (item, event) -> nextPage());
     final GuiItem PAGE_NUMBER_ITEM = new GuiItem(new ItemBuilder().setAmount(pageNumber > 64 ? 1 : pageNumber).setName(Component.text(pageNumber)).setMaterial(Material.BOOK).build());
-    int pageLast = getLastPage();
-    final GuiItem PAGE_MAX_ITEM = new GuiItem(new ItemBuilder().setAmount(pageLast > 64 ? 1 : pageLast).setName(Component.text(pageLast)).setMaterial(Material.BOOK).build());
 
     if (canBackPage()) {
       insertToolBoxItem(3, BACK_PAGE_ITEM);
@@ -99,7 +97,6 @@ public abstract class PaginatedChestGui extends AbstractChestGui {
       removeToolBoxItem(3);
     }
     insertToolBoxItem(4, PAGE_NUMBER_ITEM);
-    insertToolBoxItem(8, PAGE_MAX_ITEM);
     if (canNextPage()) {
       insertToolBoxItem(5, NEXT_PAGE_ITEM);
     } else {
