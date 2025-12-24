@@ -1,4 +1,4 @@
-package net.glomc.utils.gui;
+package net.glomc.utils.gui.builders;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
