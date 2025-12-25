@@ -5,6 +5,7 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.glomc.utils.gui.builders.ItemBuilder;
+import net.glomc.utils.gui.builders.ItemsConstructor;
 import net.glomc.utils.gui.components.GuiItem;
 import net.glomc.utils.gui.components.GuiListener;
 import net.kyori.adventure.text.Component;
@@ -32,16 +33,16 @@ public class TestPlugin extends JavaPlugin {
 
   }
 
-  public static class TestPageGui extends PaginatedChestGui {
+  public static class TestPageGui extends PaginatedChestGui implements ItemsConstructor<GuiItem> {
 
     protected TestPageGui(Plugin plugin) {
-      super(Component.text("page gui test"), 6, 6, plugin, getTestItemsBIG());
-      cancelRefreshOnClose(true);
-      refreshGuiEvery(5);
-
+      super(Component.text("page gui test"), 6, 6, plugin);
+      //cancelRefreshOnClose(true);
+      //refreshGuiEvery(1);
+      resetContent(this);
     }
 
-
+    private static final List<GuiItem> TEST_ITEMS_BIG = getTestItemsBIG();
     private static List<GuiItem> getTestItemsBIG() {
       List<GuiItem> content = new ArrayList<>();
       for (Material value : Material.values()) {
@@ -78,6 +79,16 @@ public class TestPlugin extends JavaPlugin {
         nextPage();
         if (!canNextPage()) isReverse = true;
       }
+    }
+
+    @Override
+    public GuiItem builder(GuiItem data) {
+      return data;
+    }
+
+    @Override
+    public List<GuiItem> getData() {
+      return TEST_ITEMS_BIG;
     }
   }
 
@@ -138,7 +149,7 @@ public class TestPlugin extends JavaPlugin {
     public void execute(CommandSourceStack commandSourceStack, String[] strings) {
       if (commandSourceStack.getExecutor() instanceof Player player) {
         player.closeInventory();
-        new TestPageGui(plugin).open(player);
+          new TestPageGui(plugin).open(player);
       }
     }
   }

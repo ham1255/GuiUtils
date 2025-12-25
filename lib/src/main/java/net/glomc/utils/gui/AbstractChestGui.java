@@ -144,9 +144,13 @@ public abstract class AbstractChestGui implements InventoryHolder {
   }
 
   public void cancelRefresh() {
-    if (refreshTask != null) refreshTask.cancel();
+    if (refreshTask != null) {
+      refreshTask.cancel();
+      refreshTask = null;
+    }
   }
 
+  @SuppressWarnings("all")
   protected void cancelRefreshOnClose(boolean cancel) {
     this.cancelRefreshOnClose = cancel;
   }

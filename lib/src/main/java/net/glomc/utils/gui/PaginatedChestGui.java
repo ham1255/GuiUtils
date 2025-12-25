@@ -3,6 +3,7 @@ package net.glomc.utils.gui;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import net.glomc.utils.gui.builders.ItemBuilder;
+import net.glomc.utils.gui.builders.ItemsConstructor;
 import net.glomc.utils.gui.components.GuiItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,6 +22,14 @@ public abstract class PaginatedChestGui extends AbstractChestGui {
   private int pageNumber = 1;
   private final int toolBoxRow;
 
+  protected PaginatedChestGui(Component name, int rows, int toolboxRow, Plugin plugin) {
+    this(name, rows, toolboxRow, plugin, List.of());
+  }
+
+  protected PaginatedChestGui(Component name, int rows, int toolboxRow, Plugin plugin, ItemsConstructor<?> constructor) {
+    this(name, rows, toolboxRow, plugin, constructor.getContent());
+  }
+
   protected PaginatedChestGui(Component name, int rows, int toolboxRow, Plugin plugin, List<GuiItem> content) {
     super(name, rows, plugin);
     Preconditions.checkArgument(rows > 1, "rows must be bigger than 1 as a row being used as page control. current rows: %s", rows);
@@ -29,6 +38,10 @@ public abstract class PaginatedChestGui extends AbstractChestGui {
     this.pageSize = (rows * 9) - 9; // - 9 because we reserve a row for toolbox :)
     this.toolBoxRow = toolboxRow;
     this.content.addAll(content);
+  }
+
+  public void resetContent(ItemsConstructor<?> constructor) {
+    resetContent(constructor.getContent());
   }
 
   public void resetContent(List<GuiItem> content) {

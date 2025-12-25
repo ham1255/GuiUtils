@@ -26,11 +26,16 @@ tasks {
   javadoc {
     options.encoding = Charsets.UTF_8.name()
   }
+  runServer {
+# for tpsbar and rambar
+#    var runFolder = runDirectory.get().asFile
+#    serverJar(File(runFolder, "purpur-1.21.11-2542.jar"))
+  }
 }
 
 bukkitPluginYaml {
   main = "net.glomc.utils.gui.TestPlugin"
   load = BukkitPluginYaml.PluginLoadOrder.STARTUP
-  authors.add("Author")
-  apiVersion = "1.21.10"
+  authors.add("ham1255")
+  apiVersion = "1.21.11"
 }
